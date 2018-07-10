@@ -1,6 +1,0 @@
-admin,rangeradmin,ranger-admin-keystore.jks,/etc/ranger/admin/conf,ip-172-30-13-97.us-west-2.compute.internal,
-hdfs,rangerHdfsAgent,hdfs-plugin-keystore.jks,/etc/hadoop/conf,ip-172-30-10-51.us-west-2.compute.internal,
-yarn,rangerYarnAgent,yarn-plugin-keystore.jks,/etc/hadoop/conf,ip-172-30-13-154.us-west-2.compute.internal
-hbase,rangerHbaseAgent,hbase-plugin-keystore.jks,/etc/hbase/conf,ip-172-30-10-51.us-west-2.compute.internal
-hive,rangerHiveAgent,hive-plugin-keystore.jks,/etc/hadoop/conf,ip-172-30-13-154.us-west-2.compute.internal,
-kms,rangerkms,ranger-kms-keystore.jks,/etc/hadoop/conf,ip-172-30-13-97.us-west-2.compute.internal,

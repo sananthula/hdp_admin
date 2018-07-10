@@ -1,6 +1,0 @@
-admin,rangeradmin,ranger-admin-keystore.jks,/etc/ranger/admin/conf,<FQDN>,<FQDN>
-hdfs,rangerHdfsAgent,hdfs-plugin-keystore.jks,/etc/hadoop/conf,<FQDN>,<FQDN>
-yarn,rangerYarnAgent,yarn-plugin-keystore.jks,/etc/hadoop/conf,<FQDN>,<FQDN>
-hbase,rangerHbaseAgent,hbase-plugin-keystore.jks,/etc/hbase/conf,<FQDN>,<FQDN>
-hive,rangerHiveAgent,hive-plugin-keystore.jks,/etc/hadoop/conf,<FQDN>,<FQDN>
-kms,rangerkms,ranger-kms-keystore.jks,/etc/hadoop/conf,<FQDN>,<FQDN>
