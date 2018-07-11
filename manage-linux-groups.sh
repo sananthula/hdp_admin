@@ -20,7 +20,7 @@
 NUMARGS=$#
 OPTION=$1
 HOSTS=${HOME}/etc/listhosts.txt
-GROUPS=${HOME}/etc/listgroups.txt
+GROUPFILE=${HOME}/etc/listgroups.txt
 LOGDIR=${HOME}/log
 DATETIME=$(date +%Y%m%d%H%M)
 LOGFILE="${LOGDIR}/linux-groups-${DATETIME}.log"
@@ -49,7 +49,7 @@ function addGroups() {
 		echo "Adding Linux groups on ${HOST}" | tee -a "${LOGFILE}"
 		while read -r NEWGROUP; do
 			ssh -tt ${HOST} "sudo groupadd ${NEWGROUP}" < /dev/null >> ${LOGFILE} 2>&1
-		done < ${GROUPS}
+		done < ${GROUPFILE}
 	done
 }
 
@@ -60,7 +60,7 @@ function deleteGroups() {
 		echo "Deleting Linux groups on ${HOST}" | tee -a "${LOGFILE}"
 		while read -r NEWGROUP; do
 			ssh -tt ${HOST} "sudo groupdel ${NEWGROUP}" < /dev/null >> ${LOGFILE} 2>&1
-		done < ${GROUPS}
+		done < ${GROUPFILE}
 	done
 }
 
@@ -92,7 +92,7 @@ callFunction
 # Run checks
 checkSudo
 checkLogDir
-checkFile ${GROUPS}
+checkFile ${GROUPFILE}
 
 # Run option
 runOption
