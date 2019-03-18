@@ -33,13 +33,13 @@ usage() {
 	exit 2
 }
 
-function callFunction() {
+function callInclude() {
 # Test for script and run functions
 
-        if [ -f ${HOME}/sbin/functions.sh ]; then
-                source ${HOME}/sbin/functions.sh
+        if [ -f ${HOME}/sbin/include.sh ]; then
+                source ${HOME}/sbin/include.sh
         else
-                echo "ERROR: The file ${HOME}/sbin/functions not found."
+                echo "ERROR: The file ${HOME}/sbin/include.sh not found."
                 echo "This required file provides supporting functions."
         fi
 }
@@ -89,7 +89,7 @@ function validate() {
 
 # MAIN 
 # Source functions
-callFunction
+callInclude
 
 # Checks
 checkArg 0

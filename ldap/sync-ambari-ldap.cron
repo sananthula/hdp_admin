@@ -22,7 +22,7 @@ ADMINUSER=$1
 PASSWORD=$2
 AMBARI_ADMIN_USER="${ADMINUSER}:${PASSWORD}"
 LDAP_HOST=ad01.lab.hortonworks.net
-ETCDIR=${HOME}/etc
+ETCDIR=${HOME}/cron
 export PATH=/bin:/usr/bin:/usr/sbin:/user/local/bin
 
 # FUNCTIONS

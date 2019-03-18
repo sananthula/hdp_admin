@@ -21,7 +21,7 @@ NUMARGS=$#
 OPTION=$1
 INPUT1=$2
 INPUT2=$3
-HOSTS=${HOME}/etc/listhosts.txt
+HOSTS=${HOME}/conf/listhosts.txt
 PYFILE=cert-verification.cfg
 KRBFILE=krb5.conf
 LOGDIR=${HOME}/log
@@ -39,13 +39,13 @@ function usage() {
 	exit 
 }
 
-function callFunction() {
+function callInclude() {
 # Test for script and run functions
 
-        if [ -f ${HOME}/sbin/functions.sh ]; then
-                source ${HOME}/sbin/functions.sh
+        if [ -f ${HOME}/sbin/include.sh ]; then
+                source ${HOME}/sbin/include.sh
         else
-                echo "ERROR: The file ${HOME}/sbin/functions not found."
+                echo "ERROR: The file ${HOME}/sbin/include.sh not found."
                 echo "This required file provides supporting functions."
         fi
 }
@@ -118,7 +118,7 @@ function runSPENGO() {
 
 	for HOST in $(cat ${HOSTS}); do
 		echo "Run SPNEGO key on ${HOST}" | tee -a ${LOGFILE}
-		ssh -tt ${HOST} "${HOME}/config-spnego-key.sh ${PASSWORD}"  >> ${LOGFILE} 2>&1
+		ssh -tt ${HOST} "${HOME}/sbin/config-spnego-key.sh ${PASSWORD}"  >> ${LOGFILE} 2>&1
 	done 
 }
 
@@ -127,7 +127,7 @@ function pushKRBFile() {
 
         for HOST in $(cat ${HOSTS}); do
                 echo "Copy hosts file to ${HOST}" | tee -a ${LOGFILE}
-                scp ${HOME}/etc/${KRBFILE} ${HOST}:${HOME}/  >> ${LOGFILE} 2>&1
+                scp ${HOME}/conf/${KRBFILE} ${HOST}:${HOME}/  >> ${LOGFILE} 2>&1
         done
 }
 
@@ -181,7 +181,7 @@ function runOption() {
 
 # MAIN
 # Source functions
-callFunction
+callInclude
 
 # Run checks
 checkSudo

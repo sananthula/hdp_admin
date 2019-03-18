@@ -42,11 +42,11 @@
 # VARIABLES
 NUMARGS=$#
 JARFILE=/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar
-USER1=dev1
-USER2=ops1
-USER3=biz1
-USER4=dev2
-USER5=ops2
+USER1=dev01
+USER2=ops01
+USER3=biz01
+USER4=dev02
+USER5=ops02
 LOGDIR=${HOME}/log
 DATETIME=$(date +%Y%m%d%H%M)
 LOGFILE="${LOGDIR}/job-runner-${DATETIME}.log"
@@ -57,13 +57,13 @@ function usage() {
         exit 1
 }
 
-function callFunction() {
+function callInclude() {
 # Test for script and run functions
 
-        if [ -f ${HOME}/sbin/functions.sh ]; then
-                source ${HOME}/sbin/functions.sh
+        if [ -f ${HOME}/sbin/include.sh ]; then
+                source ${HOME}/sbin/include.sh
         else
-                echo "ERROR: The file ${HOME}/sbin/functions not found."
+                echo "ERROR: The file ${HOME}/sbin/include.sh not found."
                 echo "This required file provides supporting functions."
         fi
 }
@@ -145,7 +145,6 @@ function setQueueJobs() {
         read -p "Set number of pi calculations: " CALCS
 }
 
-
 function runQueueJobs() {
 # Run pi jops in different queues
 
@@ -221,7 +220,7 @@ function runOption() {
 
 # MAIN
 # Source functions
-callFunction
+callInclude
 
 # Run checks
 checkSudo

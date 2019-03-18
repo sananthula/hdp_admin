@@ -21,7 +21,7 @@
 # RFC-1274 Script Maintenance
 
 # VARIABLES
-CERTDIR=/Users/hdpedu/certs/ref
+CERTDIR=/Users/hdpedu/pki/ref
 
 # FUNCTIONS
 function usage() {

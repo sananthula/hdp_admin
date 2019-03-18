@@ -1,0 +1,64 @@
+# Hortonworks University
+# This script is for training purposes only and is to be used only
+# in support of approved Hortonworks University exercises. Hortonworks
+# assumes no liability for use outside of our training environments.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Title: ERRORS.txt 
+# Author: WKD
+# Date: 1MAR18
+# Purpose: Provide notes on the scripts written to support configuing
+# SSL for a HDP cluster.
+# All scripts are written to be run as standalone; however, there
+# are run scripts which provide menu driven front ends. 
+
+Truststore Setup in Expect
+I added a line for expect "The truststore is already configured"
+send "y\r"
+
+SSL INSTALL HADOOP NN HANGS ON STARTUP
+This hangs and then timesout before proceeding. Why is the Safe mode taking so long to turn off?
+2018-03-25 13:34:50,260 - Retrying after 10 seconds. Reason: Execution of '/usr/hdp/current/hadoop-hdfs-namenode/bin/hdfs dfsadmin -fs hdfs://ip-172-30-10-106.us-west-2.compute.internal:8020 -safemode get | grep 'Safe mode is OFF'' returned 1. 
+
+WEBHCAT WHAT CAN WE DO ABOUT THIS HANGING ON RESTART?
+
+Can we suppress this message from JKS?
+Warning: The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore /home/centos/ssl/ip-172-31-7-232.eu-central-1.compute.internal-keystore.jks -destkeystore /home/centos/ssl/ip-172-31-7-232.eu-central-1.compute.internal-keystore.jks -deststoretype pkcs12".
+
+Non-Root for AMBARI AGENT
+IMPORTANT NOTE: I had to change the non-root ambari-agent pseudo file to include /usr/java/default/bin/java due to RM not starting connection failed for https to Secondary NN.
+
+TEZ CHANGE
+NOTE CHANGED setup-ssl-hadoop.sh to add this parameter. To make use of the Tez View in Ambari adjust the property tez.tez-ui.history-url.base in tez-site. Currently http and working. Change to https and it also works.  Add this to setup-ssl-hadoop.sh script.
+
+HBASE Docs
+Why HBASE Master docs implies the use of hbase.jks to all hosts. When it uses the Hadoop SSL.
+
+ALERTS DUE TO SSL 
+This alert is raised because accessing HTTP and not HTTPS. Same is true for Ranger user alert
+FOR SECONDARY NN
+Connection failed to http://ip-172-30-10-170.us-west-2.compute.internal:50090 (<urlopen error [Errno 111] Connection refused>)
+
+
+KNOX SSL HANGING START
+I am using the HWX doc instructions and the Knox cli script. We need to move this onto Hadoop Keystore Factory.
+2018-03-01 04:59:52,889 - checked_call returned (0, '')
+2018-03-01 04:59:52,890 - call['ambari-sudo.sh su knox -l -s /bin/bash -c 'curl --location-trusted -k --negotiate -u : -b /var/lib/ambari-agent/tmp/cookies/c7c5335a-050f-44fe-9f55-ed17aad6917a -c /var/lib/ambari-agent/tmp/cookies/c7c5335a-050f-44fe-9f55-ed17aad6917a -w '"'"'%{http_code}'"'"' http://ip-172-30-9-103.us-west-2.compute.internal:6080/login.jsp --connect-timeout 10 --max-time 12 -o /dev/null 1>/tmp/tmp9pX5yP 2>/tmp/tmpnnLGbE''] {'quiet': False, 'env': {'KRB5CCNAME': '/var/lib/ambari-agent/tmp/curl_krb_cache/ranger_admin_calls_knox_cc_e6bda536b50821fd5fbc4cb23ff8b941'}}
+2018-03-01 04:59:52,928 - call returned (7, '')
+2018-03-01 04:59:52,928 - Will retry 28 time(s), caught exception: (u"Execution of 'curl --location-trusted -k --negotiate -u : -b /var/lib/ambari-agent/tmp/cookies/c7c5335a-050f-44fe-9f55-ed17aad6917a -c /var/lib/ambari-agent/tmp/cookies/c7c5335a-050f-44fe-9f55-ed17aad6917a -w '%{http_code}' http://ip-172-30-9-103.us-west-2.compute.internal:6080/login.jsp --connect-timeout 10 --max-time 12 -o /dev/null 1>/tmp/tmp9pX5yP 2>/tmp/tmpnnLGbE' returned 7.   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (7) Failed connect to ip-172-30-9-103.us-west-2.compute.internal:6080; Connection refused\n000",). Sleeping for 8 sec(s)
+2018-03-01 05:00:00,937 - checked_call['/usr/bin/kinit -c /var/lib/ambari-agent/tmp/curl_krb_cache/ranger_admin_calls_knox_cc_e6bda536b50821fd5fbc4cb23ff8b941 -kt /etc/security/keytabs/knox.service.keytab knox/ip-172-30-8-61.us-west-2.compute.internal@LAB.HORTONWORKS.NET > /dev/null'] {'user': 'knox'}
+2018-03-01 05:00:00,973 - checked_call returned (0, '')
+2018-03-01 05:00:00,974 - call['ambari-sudo.sh su knox -l -s /bin/bash -c 'curl --location-trusted -k --negotiate -u : -b /var/lib/ambari-agent/tmp/cookies/6761312a-5805-4d40-9135-96c286899852 -c /var/lib/ambari-agent/tmp/cookies/6761312a-5805-4d40-9135-96c286899852 -w '"'"'%{http_code}'"'"' http://ip-172-30-9-103.us-west-2.compute.internal:6080/login.jsp --connect-timeout 10 --max-time 12 -o /dev/null 1>/tmp/tmp6zkalV 2>/tmp/tmpaYO1Ag''] {'quiet': False, 'env': {'KRB5CCNAME': '/var/lib/ambari-agent/tmp/curl_krb_cache/ranger_admin_calls_knox_cc_e6bda536b50821fd5fbc4cb23ff8b941'}}
+2018-03-01 05:00:01,011 - call returned (7, '')
+2018-03-01 05:00:01,012 - Will retry 27 time(s), caught exception: (u"Execution of 'curl --location-trusted -k --negotiate -u : -b /var/lib/ambari-agent/tmp/cookies/6761312a-5805-4d40-9135-96c286899852 -c /var/lib/ambari-agent/tmp/cookies/6761312a-5805-4d40-9135-96c286899852 -w '%{http_code}' http://ip-172-30-9-103.us-west-2.compute.internal:6080/login.jsp --connect-timeout 10 --max-time 12 -o /dev/null 1>/tmp/tmp6zkalV 2>/tmp/tmpaYO1Ag' returned 7.   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (7) Failed connect to ip-172-30-9-103.us-west-2.compute.internal:6080; Connection refused\n000",). Sleeping for 8 sec(s)
+2018-03-01 05:00:09,020 - checked_call['/usr/bin/kinit -c /var/lib/ambari-agent/tmp/curl_krb_cache/ranger_admin_calls_knox_cc_e6bda536b50821fd5fbc4cb23ff8b941 -kt /etc/security/keytabs/knox.service.keytab knox/ip-172-30-8-61.us-west-2.compute.internal@LAB.HORTONWORKS.NET > /dev/null'] {'user': 'knox'}
+
+
+RANGER EXTERNAL IP
+What is the deal with the prameter in Ranger for External HTTPS, when I set it to FQDN for AWS external IP  it fails. Must run with internal IP. Tried this twice.
+
+

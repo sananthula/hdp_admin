@@ -10,21 +10,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Title: checkpoint-hdfs.sh
+# Name: push-agents-ini.sh
 # Author: WKD
 # Date: 1MAR18
-# Purpose: This script checkPoints the NameNode. 
-# Alert. This can be done if the checkPoint alert comes out due 
-# to no current checkPoint. This script should be run on the 
-# ACTIVE NAMEHOST. The alert will clear.
+# Purpose: Script to push ambari-agents.ini file into the 
+# /etc/ambari-agent/conf directory of the nodes contained in the 
+# nodes list. The node list is a text file. 
 
-# VARIABLE
+# VARIABLES
 NUMARGS=$#
+PUSHFILE=${HOME}/conf/ambari-agent.ini
+HOSTS=${HOME}/conf/listhosts.txt
+LOGDIR=${HOME}/log
+DATETIME=$(date +%Y%m%d%H%M)
+LOGFILE="${LOGDIR}/push-agents-${DATETIME}.log"
 
 # FUNCTIONS
 function usage() {
-        echo "Usage: $(basename $0)"
-        exit 
+	echo "Usage: $(basename $0)" 
+	exit
 }
 
 function callInclude() {
@@ -38,21 +42,35 @@ function callInclude() {
         fi
 }
 
-function checkPoint() {
-# Place NN in safemode and the merge editlogs into fsimage
+function pushFile() {
+# push the file into remote directory 
 
-	sudo -u hdfs hdfs dfsadmin -safemode enter
-	sudo -u hdfs hdfs dfsadmin -saveNamespace
-	sudo -u hdfs hdfs dfsadmin -safemode leave
+	for HOST in $(cat ${HOSTS}); do
+		echo "Copy the file to ${HOST}"
+		scp ${PUSHFILE} ${HOST}:/tmp/ambari-agent.ini >> ${LOGFILE} 2>&1
+	done 
+}
+
+function moveFile() {
+# move the file into remote /etc directory 
+
+	for HOST in $(cat ${HOSTS}); do
+		echo "Move the file on ${HOST}"
+		ssh -tt ${HOST} "sudo mv /tmp/ambari-agent.ini /etc/ambari-agent/conf/ambari-agent.ini" >> ${LOGFILE} 2>&1
+	done 
 }
 
 # MAIN
-# Source Functions
+# Source functions
 callInclude
 
 # Run checks
 checkSudo
+checkLogDir
 checkArg 0
+checkFile ${PUSHFILE}
+checkFile ${HOSTS}
 
-# Checkpoint
-checkPoint
+# Move file
+pushFile
+moveFile

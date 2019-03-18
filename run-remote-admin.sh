@@ -20,7 +20,7 @@
 NUMARGS=$#
 OPTION=$1
 INPUT=$2
-HOSTS=${HOME}/etc/listhosts.txt
+HOSTS=${HOME}/conf/listhosts.txt
 LOGDIR=${HOME}/log
 DATETIME=$(date +%Y%m%d%H%M)
 LOGFILE=${LOGDIR}/run-remote-nodes-${DATETIME}.log
@@ -32,13 +32,13 @@ function usage() {
 	exit 
 }
 
-function callFunction() {
+function callInclude() {
 # Test for script and run functions
 
-        if [ -f ${HOME}/sbin/functions.sh ]; then
-                source ${HOME}/sbin/functions.sh
+        if [ -f ${HOME}/sbin/include.sh ]; then
+                source ${HOME}/sbin/include.sh
         else
-                echo "ERROR: The file ${HOME}/sbin/functions not found."
+                echo "ERROR: The file ${HOME}/sbin/include.sh not found."
                 echo "This required file provides supporting functions."
         fi
 }
@@ -73,7 +73,7 @@ function pushICloud() {
 
         for HOST in $(cat ${HOSTS}); do
         echo "Copy iCloud.conf to ${HOST}"
-        scp ${HOME}/etc/cloud.cfg ${HOST}:/tmp
+        scp ${HOME}/conf/cloud.cfg ${HOST}:/tmp
         ssh -t ${HOST} "sudo mv /tmp/cloud.cfg /etc/cloud/cloud.cfg"
 done
 }
@@ -169,7 +169,7 @@ function runOption() {
 
 # MAIN
 # Source functions
-callFunction
+callInclude
 
 # Run checks
 checkSudo

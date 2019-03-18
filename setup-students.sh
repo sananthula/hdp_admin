@@ -68,7 +68,7 @@ function sshFile() {
 # Copy in the private key on the students hosts
 
         echo "Setting up ssh for ${USER} for ${HOST}"
-        ssh ${HOST} -C "cp ${HOME}/certs/hwu/id_rsa ${HOME}/.ssh;
+        ssh ${HOST} -C "cp ${HOME}/pki/hwu/hwu-training-keypair.pem ${HOME}/.ssh/id_rsa;
         	chmod 600 ${HOME}/.ssh/id_rsa"
 }
 

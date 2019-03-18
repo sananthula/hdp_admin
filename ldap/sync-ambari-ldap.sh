@@ -18,7 +18,7 @@
 # See Hortonworks documentation for suggested periodicity.
 
 #VARIABLES
-ETCDIR=${HOME}/etc
+ETCDIR=${HOME}/conf
 
 # FUNCTIONS
 function usage() {

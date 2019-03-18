@@ -10,24 +10,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Name: run-agents.sh
+# Name: run-remote-nodes.sh
 # Author: WKD
 # Date: 1MAR18
-# Purpose: This script restarts all of the ambari agents in the cluster.
-# The IP address for the node must be in the node list file. 
-# The root user is not required to run this script. Sudo is used
-# for the remote commands.
-# Changes:
+# Purpose: Script to run any script in the user's home directory on 
+# every node contained in the node list.  
 
 # VARIABLES
 NUMARGS=$#
 OPTION=$1
+INPUT=$2
 HOSTS=${HOME}/conf/listhosts.txt
+LOGDIR=${HOME}/log
+DATETIME=$(date +%Y%m%d%H%M)
+LOGFILE=${LOGDIR}/run-remote-nodes-${DATETIME}.log
 
 # FUNCTIONS
 function usage() {
-        echo "Usage: $(basename $0) [status|start|stop|restart]" 
-        exit
+	echo "Usage: $(basename $0) [user] [authorized_key]" 
+	exit 
 }
 
 function callInclude() {
@@ -41,38 +42,50 @@ function callInclude() {
         fi
 }
 
-function runAgents() {
-# Run the Ambari agents with option 
+function nifiSSH() {
+# Setup ssh for NiFi on cluster 
 
-	for HOST in $(cat ${HOSTS}); do
-		echo "Running ambari-agent ${OPTION} on ${HOST}"
-		ssh -tt ${HOST} "sudo ambari-agent ${OPTION}"  
-	done 
+	FILE=${INPUT}
+	checkFile ${FILE}
+
+        for HOST in $(cat ${HOSTS}); do
+		ssh -t ${HOST} "sudo mkdir /home/nifi/.ssh"
+                scp ${FILE} ${HOST}:/home/nifi/.ssh >> ${LOGFILE} 2>&1
+		ssh -t ${HOST} "sudo chmod 600 /home/nifi/.ssh/${FILE}"
+		ssh -t ${HOST} "sudo chmod 700 /home/nifi/.ssh"
+		ssh -t ${HOST} "sudo chown -R nifi:nifi /home/nifi/.ssh"
+        done
 }
 
 function runOption() {
-# Case statement for managing Ambari agents 
+# Case statement for options
 
-        case "${OPTION}" in
-                -h | --help)
-                        usage
+	case "${OPTION}" in
+		-h | --help)
+			usage
 			;;
-                status|start|restart|stop)
-                        runAgents
+  		user)
+                        checkArg 2
+                        nifiSSH 
 			;;
-                *)
-                        usage
+		*)
+			usage
 			;;
-        esac
+	esac
 }
 
 # MAIN
-# Source function
+# Source functions
 callInclude
 
 # Run checks
 checkSudo
-checkArg 1
+
+# Run setups
+setupLog ${LOGFILE}
 
 # Run option
 runOption
+
+# Review log file
+echo "Review log file at ${LOGFILE}"
